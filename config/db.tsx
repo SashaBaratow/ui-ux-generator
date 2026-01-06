@@ -6,4 +6,4 @@ if (!databaseUrl) {
     throw new Error('DATABASE_URL is not defined');
 }
 
-const db = drizzle(databaseUrl);
+export const db = drizzle(databaseUrl);
