@@ -13,6 +13,7 @@ export async function POST(req: Request) {
 
     if (users?.length === 0) {
         const data =  {
+            clerkUserId: user?.id as string,
             name: user?.fullName ?? '',
             email: user?.primaryEmailAddress?.emailAddress as string
         }

@@ -3,6 +3,7 @@ import {DM_Sans} from "next/font/google";
 import "./globals.css";
 import {ClerkProvider} from "@clerk/nextjs";
 import Provider from "@/app/provider";
+import {Toaster} from "react-hot-toast";
 
 const appFont = DM_Sans({
     subsets: ['latin']
@@ -28,6 +29,7 @@ export default function RootLayout(
                     </Provider>
                 </body>
             </html>
+            <Toaster />
         </ClerkProvider>
     );
 }
