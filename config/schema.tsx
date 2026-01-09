@@ -11,6 +11,7 @@ export const usersTable = pgTable("users", {
 
 export const projectsTable = pgTable("projects", {
     id: integer().primaryKey().generatedAlwaysAsIdentity(),
+    projectId: varchar({length: 255 }).notNull().unique(),
     userId: integer()
         .notNull()
         .references(()=> usersTable.id, {onDelete: 'cascade'}),
