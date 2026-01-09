@@ -3,7 +3,7 @@ import Hero from "@/app/_shared/hero/Hero";
 
 export default function Home() {
   return (
-    <div className={'w-full px-2 py-1'}>
+    <div className={'w-full px-2 py-3'}>
         <Header/>
         <Hero/>
         <div className={'absolute -top-40 -left-40 h-[500px] w-[500px] bg-purple-400/20 blur-[120px] rounded-full z-0'}/>

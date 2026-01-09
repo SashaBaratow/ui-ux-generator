@@ -22,7 +22,7 @@ export default function RootLayout(
         <ClerkProvider>
             <html lang="en">
                 <body
-                    className={`${appFont.className} antialiased`}
+                    className={`${appFont.className} antialiased h-screen`}
                 >
                     <Provider>
                         {children}

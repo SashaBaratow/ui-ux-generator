@@ -12,12 +12,11 @@ import {cn} from "@/lib/utils";
 import {AnimatedGradientText} from "@/components/ui/animated-gradient-text";
 import {suggestList} from "@/app/_shared/hero/suggestList";
 import Image from "next/image";
-import {useAuth, useUser} from "@clerk/nextjs";
+import {useUser} from "@clerk/nextjs";
 import {useRouter} from "next/navigation";
 import toast from "react-hot-toast";
 import axios from "axios";
 
-type deviceT = 'mobile' | 'website'
 
 function Hero() {
 
@@ -39,12 +38,14 @@ function Hero() {
             return
         }
         setLoading(true)
+        const projectId = crypto.randomUUID()
         const result = await axios.post("/api/project", {
             userInput: userPromt,
-            device
+            device,
+            projectId,
         })
-        console.log(result)
         setLoading(false)
+        router.push(`/project/${projectId}`)
     }
 
     return (

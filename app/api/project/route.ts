@@ -10,7 +10,7 @@ export async function POST(req: NextRequest) {
         return NextResponse.json({message:"Unauthorized"}, {status: 401})
     }
 
-    const {userInput, device} = await req.json()
+    const {userInput, device, projectId} = await req.json()
 
     if (!userInput) {
         return NextResponse.json({message: 'user promt is required'}, {status: 401})
@@ -28,6 +28,7 @@ export async function POST(req: NextRequest) {
         userId: clerkUser?.id,
         device: device,
         userInput: userInput,
+        projectId
     }).returning()
 
     return NextResponse.json(result[0])
