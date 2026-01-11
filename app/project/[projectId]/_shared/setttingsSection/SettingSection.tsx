@@ -1,17 +1,31 @@
 'use client'
 
-import {useState} from 'react';
+import {useEffect, useState} from 'react';
 import {Input} from "@/components/ui/input";
 import {Textarea} from "@/components/ui/textarea";
 import {Button} from "@/components/ui/button";
 import {Camera, Share, Sparkle} from "lucide-react";
-import {THEME_NAME_LIST, THEMES} from "@/app/project/[projectId]/_shared/setttingsSection/themes";
+import {THEME_NAME_LIST, THEMES} from "@/data/themes";
+import {ProjectType} from "@/types/types";
 
-function SettingSection() {
+type PropsT = {
+    projectDetails: ProjectType | undefined
+}
+
+function SettingSection(
+    {
+        projectDetails,
+    }: PropsT) {
 
     const [selectedTheme, setSelectedTheme] = useState<string>('AURORA_INK');
-    const [projectname, setProjectname] = useState<string>('');
-    const [userNewScreenINput, setUserNewScreenINput] = useState<string>('');
+    const [projectName, setProjectName] = useState<string>('');
+    const [userNewScreenInput, setUserNewScreenInput] = useState<string>('');
+
+    useEffect(() => {
+        if (projectDetails && typeof projectDetails.projectName === "string") {
+            setProjectName(projectDetails.projectName);
+        }
+    }, [projectDetails])
 
     return (
         <div className={'w-[300px] h-[90vh] p-5 border-r'}>
@@ -20,14 +34,15 @@ function SettingSection() {
                 <b className={'text-sm mb-1'}>Project Name</b>
                 <Input
                     placeholder={'Project Name'}
-                    onChange={(e) => setProjectname(e.target.value)}
+                    value={projectName}
+                    onChange={(e) => setProjectName(e.target.value)}
                 />
             </div>
             <div className={'mt-3'}>
                 <b className={'text-sm mb-1'}>Project Name</b>
                 <Textarea
                     placeholder={'Enter promt to generate screen using AI'}
-                    onChange={(e) => setUserNewScreenINput(e.target.value)}
+                    onChange={(e) => setUserNewScreenInput(e.target.value)}
                 />
                 <Button className={'mt-4 w-full'}><Sparkle/> Generate With AI</Button>
             </div>

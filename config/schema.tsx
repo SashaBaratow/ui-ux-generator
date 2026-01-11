@@ -1,4 +1,4 @@
-import {date, integer, json, pgTable, varchar} from "drizzle-orm/pg-core";
+import {date, integer, json, pgTable, text, varchar} from "drizzle-orm/pg-core";
 import {relations} from "drizzle-orm";
 
 export const usersTable = pgTable("users", {
@@ -11,14 +11,27 @@ export const usersTable = pgTable("users", {
 
 export const projectsTable = pgTable("projects", {
     id: integer().primaryKey().generatedAlwaysAsIdentity(),
-    projectId: varchar({length: 255 }).notNull().unique(),
+    projectId: varchar({length: 255 }).unique(),
     userId: integer()
         .notNull()
         .references(()=> usersTable.id, {onDelete: 'cascade'}),
+    projectName: varchar({ length: 255 }),
+    theme: varchar({ length: 255 }),
     userInput: varchar({length: 255}).notNull(),
     device: varchar({length: 255}),
     createdOn: date().defaultNow(),
-    config: json()
+    config: json(),
+    projectVisualDescription: text()
+})
+
+export const screenConfigTable = pgTable('screenConfig', {
+    id: integer().primaryKey().generatedAlwaysAsIdentity(),
+    projectId: varchar().references(()=> projectsTable.projectId),
+    screenId: varchar({ length: 255 }),
+    screenName: varchar({ length: 255 }),
+    purpose: varchar({ length: 255 }),
+    screenDescription: text(),
+    code: text()
 })
 
 export const usersRelations = relations(usersTable, ({ many }) => ({
