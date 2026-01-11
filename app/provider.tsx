@@ -11,7 +11,6 @@ function Provider({children}) {
     const createNewUser = async () => {
         const result = await axios.post('/api/user', {})
 
-        console.log(result?.data)
         setUserState(result.data)
     }
 

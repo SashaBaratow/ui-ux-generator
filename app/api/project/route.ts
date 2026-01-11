@@ -1,13 +1,14 @@
 import {NextRequest, NextResponse} from "next/server";
 import {currentUser} from "@clerk/nextjs/server";
-import {projectsTable, usersTable} from "@/config/schema";
+import {projectsTable, screenConfigTable, usersTable} from "@/config/schema";
 import {db} from "@/config/db";
+import {and, eq} from "drizzle-orm";
 
 export async function POST(req: NextRequest) {
     const user = await currentUser()
 
     if (!user) {
-        return NextResponse.json({message:"Unauthorized"}, {status: 401})
+        return NextResponse.json({message: "Unauthorized"}, {status: 401})
     }
 
     const {userInput, device, projectId} = await req.json()
@@ -17,11 +18,11 @@ export async function POST(req: NextRequest) {
     }
 
     const clerkUser = await db.query.usersTable.findFirst({
-        where: (u, { eq }) => eq(u.clerkUserId, user.id),
+        where: (u, {eq}) => eq(u.clerkUserId, user.id),
     });
 
     if (!clerkUser) {
-        return NextResponse.json({message:"Unauthorized"}, {status: 401})
+        return NextResponse.json({message: "Unauthorized"}, {status: 401})
     }
 
     const result = await db.insert(projectsTable).values({
@@ -32,4 +33,49 @@ export async function POST(req: NextRequest) {
     }).returning()
 
     return NextResponse.json(result[0])
+}
+
+export async function GET(req: NextRequest) {
+
+    try {
+        const projectId = await req.nextUrl.searchParams.get("projectId")
+
+        if (!projectId) {
+            return NextResponse.json({ error: "projectId is required" }, { status: 400 })
+        }
+
+        const user = await currentUser()
+
+        if (!user) {
+            return NextResponse.json({error: 'Unauthorized'}, {status: 401})
+        }
+
+        const rows = await db
+            .select({
+                project: projectsTable,
+            })
+            .from(projectsTable)
+            .innerJoin(usersTable, eq(projectsTable.userId, usersTable.id))
+            .where(
+                and(
+                    eq(projectsTable.projectId, projectId), // или projectsTable.projectId — смотри как реально называется колонка
+                    eq(usersTable.clerkUserId, user.id),
+                )
+            )
+            .limit(1);
+
+        const result = rows[0]?.project ?? null;
+        const screenConfig = await db.select().from(screenConfigTable)
+            .where(eq(screenConfigTable.projectId, projectId))
+
+        return NextResponse.json(
+            {projectDetails: result,
+            screenConfig: screenConfig,},
+            { status: result ? 200 : 404 })
+
+    } catch (err) {
+        console.error("GET /api/project error:", err);
+        return NextResponse.json({ error: "Internal Server Error" }, { status: 500 });
+    }
+
 }
