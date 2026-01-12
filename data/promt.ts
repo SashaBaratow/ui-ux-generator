@@ -133,7 +133,7 @@ NO markdown, NO comments, NO explanations
 NO JavaScript, NO canvas — SVG ONLY for charts
     Images rules:
     Avatars → (https://i.pravatar.cc/400)
-    Other images → searchUnsplash ONLY
+    Other images → https://picsum.photos/seed/echo-dot/400/300
 Theme variables are PREDEFINED by parent — NEVER redeclare
 Use CSS variables for foundational colors ONLY:
     bg-[var(--background)]
