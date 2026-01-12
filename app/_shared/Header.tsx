@@ -4,6 +4,7 @@ import {Button} from "@/components/ui/button";
 import Image from "next/image";
 import {SignInButton, UserButton, useUser} from "@clerk/nextjs";
 
+
 function Header() {
 
     const {user} = useUser()

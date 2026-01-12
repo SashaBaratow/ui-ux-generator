@@ -2,8 +2,34 @@
 
 import Image from "next/image";
 import {Button} from "@/components/ui/button";
+import {useContext, useState} from "react";
+import {SettingContext} from "@/context/SettingContext";
+import {Loader2, Save} from "lucide-react";
+import toast from "react-hot-toast";
+import axios from "axios";
 
 function ProjectHeader() {
+
+    const {settingDetails, setSettingDetails} = useContext(SettingContext)
+
+    const [loading, setLoading] = useState(false)
+
+    const onSave = async () => {
+       try {
+           setLoading(true)
+           console.log(settingDetails)
+           const result = await axios.put('/api/project', {
+               theme: settingDetails.theme,
+               projectName: settingDetails.projectName,
+               projectId: settingDetails.projectId,
+           })
+           setLoading(false)
+           toast.success("Project saved successfully.")
+       } catch (error) {
+           setLoading(false)
+           toast.error('Error saving project')
+       }
+    }
 
     return (
         <div className={'relative flex items-center justify-between z-20 shadow mb-4'}>
@@ -15,7 +41,7 @@ function ProjectHeader() {
                 <li className={'hover:text-primary cursor-pointer'}>Home</li>
                 <li className={'hover:text-primary cursor-pointer'}>Pricing</li>
             </ul>
-            <Button> Save </Button>
+            <Button onClick={onSave}> {loading ? <Loader2 className={'animate-spin'}/> : <Save/>}  Save</Button>
         </div>
     );
 }
