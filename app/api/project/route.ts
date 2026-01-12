@@ -79,3 +79,17 @@ export async function GET(req: NextRequest) {
     }
 
 }
+
+export async function PUT(req: NextRequest) {
+    const {projectName, theme, projectId } = await req.json()
+
+    const result = await db.update(projectsTable).set({
+        projectName: projectName,
+        theme: theme,
+        projectId: projectId
+    }).where(eq(projectsTable.projectId, projectId)).returning()
+    const safeResult = JSON.parse(JSON.stringify(result[0]));
+
+
+    return NextResponse.json(safeResult)
+}

@@ -4,10 +4,11 @@ import ProjectHeader from "@/app/project/[projectId]/_shared/ProjectHeader";
 import SettingSection from "@/app/project/[projectId]/_shared/setttingsSection/SettingSection";
 import {useParams} from "next/navigation";
 import axios from "axios";
-import {useEffect, useState} from "react";
+import {useContext, useEffect, useState} from "react";
 import {ProjectType, ScreenConfigType} from "@/types/types";
 import {Loader2Icon} from "lucide-react";
 import Canvas from "@/app/project/[projectId]/_shared/canvas/Canvas";
+import {SettingContext} from "@/context/SettingContext";
 
 function ProjectCanvasPlayground() {
 
@@ -18,6 +19,7 @@ function ProjectCanvasPlayground() {
     const [screenConfig, setScreenConfig] = useState<ScreenConfigType[]>()
     const [loading, setLoading] = useState<boolean>(false)
     const [loadingMsg, setLoadingMsg] = useState<string>('Loading')
+    const {settingDetails, setSettingDetails} = useContext(SettingContext)
 
 
     const getProjectDetails = async () => {
@@ -26,6 +28,7 @@ function ProjectCanvasPlayground() {
         setProjectDetails(res?.data?.projectDetails)
         setScreenConfig(res?.data?.screenConfig)
         setScreenConfigOriginal(res?.data?.screenConfig)
+        setSettingDetails(res?.data?.screenConfig)
         setLoading(false)
     }
 

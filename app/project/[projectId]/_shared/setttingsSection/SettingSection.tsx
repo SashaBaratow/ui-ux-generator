@@ -1,12 +1,13 @@
 'use client'
 
-import {useEffect, useState} from 'react';
+import {useContext, useEffect, useState} from 'react';
 import {Input} from "@/components/ui/input";
 import {Textarea} from "@/components/ui/textarea";
 import {Button} from "@/components/ui/button";
 import {Camera, Share, Sparkle} from "lucide-react";
 import {THEME_NAME_LIST, THEMES} from "@/data/themes";
 import {ProjectType} from "@/types/types";
+import {SettingContext} from "@/context/SettingContext";
 
 type PropsT = {
     projectDetails: ProjectType | undefined
@@ -20,12 +21,26 @@ function SettingSection(
     const [selectedTheme, setSelectedTheme] = useState<string>('AURORA_INK');
     const [projectName, setProjectName] = useState<string>('');
     const [userNewScreenInput, setUserNewScreenInput] = useState<string>('');
+    const {settingDetails, setSettingDetails} = useContext(SettingContext)
 
     useEffect(() => {
         if (projectDetails && typeof projectDetails.projectName === "string") {
             setProjectName(projectDetails.projectName);
+            setSelectedTheme(projectDetails?.theme)
+            setSettingDetails((prev: any)=> ({
+                ...prev,
+                projectId: projectDetails?.projectId,
+            }))
         }
     }, [projectDetails])
+
+    const onThemeSelected = (theme: string) => {
+        setSelectedTheme(theme);
+        setSettingDetails((prev: any)=> ({
+            ...prev,
+            theme:theme
+        }))
+    }
 
     return (
         <div className={'w-[300px] h-[90vh] p-5 border-r'}>
@@ -35,7 +50,14 @@ function SettingSection(
                 <Input
                     placeholder={'Project Name'}
                     value={projectName}
-                    onChange={(e) => setProjectName(e.target.value)}
+                    onChange={(e) => {
+                        setProjectName(e.target.value)
+                        setSettingDetails((prev: any)=> ({
+                            ...prev,
+                            projectName: projectName,
+                        }))
+
+                    }}
                 />
             </div>
             <div className={'mt-3'}>
@@ -56,7 +78,7 @@ function SettingSection(
                                 key={index}
                                 className={`p-3 border-2 rounded-xl mt-2 cursor-pointer
                                  ${theme === selectedTheme && 'border-primary, bg-primary/20'}`}
-                                onClick={() => setSelectedTheme(theme)}
+                                onClick={() => onThemeSelected(theme)}
                             >
                                 <h2>{theme}</h2>
                                 <div className={'flex gap-2'}>
